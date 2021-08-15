@@ -6,4 +6,5 @@ handlers:
     secure: always
     script: auto
 env_variables:
-  FOO: 'bar'
+  REVISION_HASH: <REVISION_HASH>
+  REVISION_TIMESTAMP: <REVISION_TIMESTAMP>
