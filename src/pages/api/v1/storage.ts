@@ -2,6 +2,8 @@ import { Storage } from '@google-cloud/storage';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { v4 as uuidv4 } from 'uuid';
 
+import { cors } from '@src/lib/middlewares/cors';
+
 const GCP_PROJECT_ID = process.env['GCP_PROJECT_ID'] || '';
 const GCP_CLIENT_EMAIL = process.env['GCP_CLIENT_EMAIL'] || '';
 const GCP_PRIVATE_KEY = process.env['GCP_PRIVATE_KEY'] || '';
@@ -11,6 +13,8 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
   }
+
+  await cors(req, res);
 
   const storage = new Storage({
     projectId: GCP_PROJECT_ID,
