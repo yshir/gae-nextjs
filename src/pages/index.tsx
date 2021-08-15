@@ -44,6 +44,22 @@ const Page: NextPage = () => {
         </div>
       </form>
       <p>base64: {base64}</p>
+
+      <hr />
+
+      <div>
+        <button
+          onClick={async () => {
+            const res = await fetch('/api/v1/ping', {
+              method: 'POST',
+            });
+            const json = await res.json();
+            alert(JSON.stringify(json, null, 2));
+          }}
+        >
+          test
+        </button>
+      </div>
     </>
   );
 };
