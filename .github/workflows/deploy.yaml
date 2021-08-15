@@ -50,15 +50,14 @@ jobs:
       - name: Set env
         shell: bash -ux {0}
         run: |
-          a=`echo ${{ secrets.GCP_PRIVATE_KEY }} | sed -e "s/[\r\n]\+//g"`
-
-          sed -i -e 's/<APP_ENV>/${{ env.APP_ENV }}/g' app.yaml
-          sed -i -e 's/<REVISION_HASH>/${{ github.sha }}/g' app.yaml
-          sed -i -e 's/<REVISION_TIMESTAMP>/$(date +%s)/g' app.yaml
-          sed -i -e 's/<GCP_PROJECT_ID>/${{ secrets.GCP_PROJECT_ID }}/g' app.yaml
-          sed -i -e 's/<GCP_BUCKET_NAME>/${{ secrets.GCP_BUCKET_NAME }}/g' app.yaml
-          sed -i -e 's/<GCP_CLIENT_EMAIL>/${{ secrets.GCP_CLIENT_EMAIL }}/g' app.yaml
-          sed -i -e 's#<GCP_PRIVATE_KEY>#${a}#g' app.yaml
+          echo "env_variables:"                                      >  env.yaml
+          echo "  APP_ENV: ${{ env.APP_ENV }}"                       >> env.yaml
+          echo "  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}"     >> env.yaml
+          echo "  GCP_BUCKET_NAME: ${{ secrets.GCP_BUCKET_NAME }}"   >> env.yaml
+          echo "  GCP_CLIENT_EMAIL: ${{ secrets.GCP_CLIENT_EMAIL }}" >> env.yaml
+          echo "  GCP_PRIVATE_KEY: ${{ secrets.GCP_PRIVATE_KEY }}"   >> env.yaml
+          echo "  REVISION_HASH: ${{ github.sha }}"                  >> env.yaml
+          echo "  REVISION_TIMESTAMP: $(date +%s)"                   >> env.yaml
 
       - name: Deploy app
         run: gcloud app deploy -q --project ${{ secrets.GCP_PROJECT_ID }}
