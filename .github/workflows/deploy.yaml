@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NODE_ENV: production
+      APP_ENV: production
 
     steps:
       - uses: actions/checkout@v2
@@ -49,6 +50,7 @@ jobs:
       - name: Set env
         shell: bash -eux {0}
         run: |
+          sed -i -e 's/<APP_ENV>/${{ env.APP_ENV }}/g' app.yaml
           sed -i -e 's/<REVISION_HASH>/${{ env.REVISION_HASH }}/g' app.yaml
           sed -i -e 's/<REVISION_TIMESTAMP>/$(date +%s)/g' app.yaml
         env:
