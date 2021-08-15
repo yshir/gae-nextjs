@@ -48,13 +48,17 @@ jobs:
           export_default_credentials: true
 
       - name: Set env
-        shell: bash -eux {0}
+        shell: bash -ux {0}
         run: |
+          a=`echo ${{ secrets.GCP_PRIVATE_KEY }} | sed -e "s/[\r\n]\+//g"`
+
           sed -i -e 's/<APP_ENV>/${{ env.APP_ENV }}/g' app.yaml
-          sed -i -e 's/<REVISION_HASH>/${{ env.REVISION_HASH }}/g' app.yaml
+          sed -i -e 's/<REVISION_HASH>/${{ github.sha }}/g' app.yaml
           sed -i -e 's/<REVISION_TIMESTAMP>/$(date +%s)/g' app.yaml
-        env:
-          REVISION_HASH: ${{ github.sha }}
+          sed -i -e 's/<GCP_PROJECT_ID>/${{ secrets.GCP_PROJECT_ID }}/g' app.yaml
+          sed -i -e 's/<GCP_BUCKET_NAME>/${{ secrets.GCP_BUCKET_NAME }}/g' app.yaml
+          sed -i -e 's/<GCP_CLIENT_EMAIL>/${{ secrets.GCP_CLIENT_EMAIL }}/g' app.yaml
+          sed -i -e 's#<GCP_PRIVATE_KEY>#${a}#g' app.yaml
 
       - name: Deploy app
         run: gcloud app deploy -q --project ${{ secrets.GCP_PROJECT_ID }}
